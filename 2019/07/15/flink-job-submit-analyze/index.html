@@ -8,13 +8,13 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Flink Job 提交过程分析 | 自律使人幸福</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="概览调度架构层级 Graph 转化示意图 名词解释（比较难懂，可先略过） StreamGraph：根据用户通过 Stream API 编写的代码生成的最初的图。 StreamNode：用来代表 operator 的类，并具有所有相关的属性，如并发度、入边和出边等。 StreamEdge：表示连接两个StreamNode的边。   JobGraph：StreamGraph经过优化后生成了 Job">
+  <meta name="description" content="概览本文是针对flink job提交过程的分析，包含了提交过程中的 graph 转化，各个 graph 的作用，以及资源的调度。">
 <meta name="keywords" content="flink,大数据,流处理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flink Job 提交过程分析">
 <meta property="og:url" content="http://yoursite.com/2019/07/15/flink-job-submit-analyze/index.html">
 <meta property="og:site_name" content="自律使人幸福">
-<meta property="og:description" content="概览调度架构层级 Graph 转化示意图 名词解释（比较难懂，可先略过） StreamGraph：根据用户通过 Stream API 编写的代码生成的最初的图。 StreamNode：用来代表 operator 的类，并具有所有相关的属性，如并发度、入边和出边等。 StreamEdge：表示连接两个StreamNode的边。   JobGraph：StreamGraph经过优化后生成了 Job">
+<meta property="og:description" content="概览本文是针对flink job提交过程的分析，包含了提交过程中的 graph 转化，各个 graph 的作用，以及资源的调度。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/images/TB1qmtpJVXXXXagXXXXXXXXXXXX.png">
 <meta property="og:image" content="http://yoursite.com/images/TB1tA_GJFXXXXapXFXXXXXXXXXX.png">
@@ -30,10 +30,10 @@
 <meta property="og:image" content="http://yoursite.com/images/7DD26B78-1E18-40EA-ABAD-1A6EEA8580E2.png">
 <meta property="og:image" content="http://yoursite.com/images/C57BEBB3-9D76-4479-9C1C-85D59B1404C7.png">
 <meta property="og:image" content="http://yoursite.com/images/FA93F875-A18D-493D-97F4-FC62CB74CC21.png">
-<meta property="og:updated_time" content="2019-07-15T03:58:07.214Z">
+<meta property="og:updated_time" content="2019-07-15T04:03:15.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Flink Job 提交过程分析">
-<meta name="twitter:description" content="概览调度架构层级 Graph 转化示意图 名词解释（比较难懂，可先略过） StreamGraph：根据用户通过 Stream API 编写的代码生成的最初的图。 StreamNode：用来代表 operator 的类，并具有所有相关的属性，如并发度、入边和出边等。 StreamEdge：表示连接两个StreamNode的边。   JobGraph：StreamGraph经过优化后生成了 Job">
+<meta name="twitter:description" content="概览本文是针对flink job提交过程的分析，包含了提交过程中的 graph 转化，各个 graph 的作用，以及资源的调度。">
 <meta name="twitter:image" content="http://yoursite.com/images/TB1qmtpJVXXXXagXXXXXXXXXXXX.png">
   
     <link rel="alternative" href="/atom.xml" title="自律使人幸福" type="application/atom+xml">
@@ -194,9 +194,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <a id="more"></a>
+        <h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>本文是针对flink job提交过程的分析，包含了提交过程中的 graph 转化，各个 graph 的作用，以及资源的调度。</p>
+<a id="more"></a>
 
-<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><h3 id="调度架构层级"><a href="#调度架构层级" class="headerlink" title="调度架构层级"></a>调度架构层级</h3><p><img src="/images/TB1qmtpJVXXXXagXXXXXXXXXXXX.png" alt></p>
+<h3 id="调度架构层级"><a href="#调度架构层级" class="headerlink" title="调度架构层级"></a>调度架构层级</h3><p><img src="/images/TB1qmtpJVXXXXagXXXXXXXXXXXX.png" alt></p>
 <h3 id="Graph-转化示意图"><a href="#Graph-转化示意图" class="headerlink" title="Graph 转化示意图"></a>Graph 转化示意图</h3><p><img src="/images/TB1tA_GJFXXXXapXFXXXXXXXXXX.png" alt></p>
 <h3 id="名词解释（比较难懂，可先略过）"><a href="#名词解释（比较难懂，可先略过）" class="headerlink" title="名词解释（比较难懂，可先略过）"></a>名词解释（比较难懂，可先略过）</h3><ul>
 <li><strong>StreamGraph</strong>：根据用户通过 Stream API 编写的代码生成的最初的图。<ol>
