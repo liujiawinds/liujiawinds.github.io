@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
 <meta property="og:image" content="http://yoursite.com/images/outofmemoryerror-out-of-swap-space.png">
 <meta property="og:image" content="http://yoursite.com/images/out-of-memory-kill-process-or-sacrifice-child.png">
-<meta property="og:updated_time" content="2019-07-16T09:56:22.183Z">
+<meta property="og:updated_time" content="2019-07-16T10:02:22.027Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="各种内存溢出类型浅析">
 <meta name="twitter:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
@@ -185,7 +185,9 @@
 <li>-Xmx 增加堆大小。</li>
 <li>获取 heap dump，通过 MAT 来分析堆的组成情况，修复代码中存在的内存泄露 bug。</li>
 </ul>
-<h3 id="java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded"><a href="#java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded" class="headerlink" title="java.lang.OutOfMemoryError: GC Overhead limit exceeded"></a>java.lang.OutOfMemoryError: GC Overhead limit exceeded</h3><p>原因：垃圾收集器一直在运行，Java程序运行非常缓慢。在垃圾收集过程中，Java进程花费超过大约98％的时间进行垃圾收集，并且 GC 的收益小于堆大小的2％。如果这种情况连续出现 5 次，OutOfMemoryError错误就会被抛出。通常会抛出此异常，因为实时数据量几乎不适合Java堆，新分配的可用空间很小。</p>
+<h3 id="java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded"><a href="#java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded" class="headerlink" title="java.lang.OutOfMemoryError: GC Overhead limit exceeded"></a>java.lang.OutOfMemoryError: GC Overhead limit exceeded</h3><p>原因：垃圾收集器一直在运行，Java程序运行非常缓慢。在垃圾收集过程中，Java进程花费超过大约98％的时间进行垃圾收集，并且 GC 的收益小于堆大小的2％。如果这种情况连续出现 5 次，OutOfMemoryError错误就会被抛出。</p>
+<p>假如不抛出 GC overhead limit 错误会发生什么情况呢? 那就是GC清理的这么点内存很快会再次填满, 迫使GC再次执行. 这样就形成恶性循环, CPU使用率一直是100%, 而GC却没有任何成果. 系统用户就会看到系统卡死 - 以前只需要几毫秒的操作, 现在需要好几分钟才能完成。</p>
+<p>这也是一个很好的 <strong>快速失败原则</strong> 的案例。</p>
 <p>解决：</p>
 <ul>
 <li>增加堆大小</li>
@@ -465,19 +467,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">blog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">性能调优</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">blog</a>
               </li>
              
               <li class="article-tag-list-item">
