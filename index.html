@@ -168,9 +168,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且释放很少的内存时。</p>
-<p>当一个OutOfMemoryError异常被抛出，堆栈跟踪也会被打印出来。</p>
-<p>OutOfMemoryError异常也可能会在本地调用不能满足时被 native library抛出（例如，如果交换空间不足）。</p>
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemoryError。</p>
         
           <a class="article-more-a" href="/2019/07/16/oom-category/#more">more >></a>
         
@@ -564,6 +562,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">性能调优</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
@@ -577,14 +583,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">流处理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">性能调优</a>
               </li>
             
             <div class="clearfix"></div>

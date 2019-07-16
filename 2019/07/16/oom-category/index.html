@@ -8,21 +8,21 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>各种内存溢出类型浅析 | 自律使人幸福</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且">
+  <meta name="description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
 <meta name="keywords" content="java,性能调优">
 <meta property="og:type" content="article">
 <meta property="og:title" content="各种内存溢出类型浅析">
 <meta property="og:url" content="http://yoursite.com/2019/07/16/oom-category/index.html">
 <meta property="og:site_name" content="自律使人幸福">
-<meta property="og:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且">
+<meta property="og:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
 <meta property="og:image" content="http://yoursite.com/images/outofmemoryerror-out-of-swap-space.png">
 <meta property="og:image" content="http://yoursite.com/images/out-of-memory-kill-process-or-sacrifice-child.png">
-<meta property="og:updated_time" content="2019-07-16T09:49:10.441Z">
+<meta property="og:updated_time" content="2019-07-16T09:56:22.183Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="各种内存溢出类型浅析">
-<meta name="twitter:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且">
+<meta name="twitter:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
 <meta name="twitter:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
   
     <link rel="alternative" href="/atom.xml" title="自律使人幸福" type="application/atom+xml">
@@ -171,11 +171,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且释放很少的内存时。</p>
-<p>当一个OutOfMemoryError异常被抛出，堆栈跟踪也会被打印出来。</p>
-<p>OutOfMemoryError异常也可能会在本地调用不能满足时被 native library抛出（例如，如果交换空间不足）。</p>
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemoryError。</p>
 <a id="more"></a>
 
+<p>当一个OutOfMemoryError异常被抛出，堆栈跟踪也会被打印出来。</p>
+<p>OutOfMemoryError异常也可能会在本地调用不能满足时被 native library抛出（例如，如果交换空间不足）。</p>
 <h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><h3 id="java-lang-OutOfMemoryError-Java-heap-space"><a href="#java-lang-OutOfMemoryError-Java-heap-space" class="headerlink" title="java.lang.OutOfMemoryError: Java heap space"></a>java.lang.OutOfMemoryError: Java heap space</h3><p><strong>原因：</strong> 无法在Java堆中分配对象所需空间，可能是因为先前指定的堆大小（或者是未指定是使用的默认大小）对于应用程序来说是不够的。也可能是因为应用程序无意中持有了某些对象的引用，这阻止了这些对象被垃圾回收。这在Java语言等同于内存泄漏。</p>
 <p><mark>注意：应用程序调用的API也可能无意中持有对象引用。</mark></p>
 <p>应用程序过度使用 finalizer。finalizer 对象不能被 GC 立刻回收。因为 finalizer 由结束队列服务的守护线程调用，有时 finalizer 线程的处理能力无法跟上结束队列的增长。</p>
@@ -473,6 +473,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">性能调优</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
@@ -486,14 +494,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">流处理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">性能调优</a>
               </li>
             
             <div class="clearfix"></div>
