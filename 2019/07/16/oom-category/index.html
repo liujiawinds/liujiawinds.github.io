@@ -6,19 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: hexo | 自律使人幸福</title>
+  <title>各种内存溢出类型浅析 | 自律使人幸福</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目前就职于瀚思科技从事UEBA后台研发">
-<meta name="keywords" content="编程,代码,开源,IT网站,Developer,Programmer,Coder,用户体验,生活">
-<meta property="og:type" content="website">
-<meta property="og:title" content="自律使人幸福">
-<meta property="og:url" content="http://yoursite.com/tags/hexo/index.html">
+  <meta name="description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且">
+<meta name="keywords" content="java,性能调优">
+<meta property="og:type" content="article">
+<meta property="og:title" content="各种内存溢出类型浅析">
+<meta property="og:url" content="http://yoursite.com/2019/07/16/oom-category/index.html">
 <meta property="og:site_name" content="自律使人幸福">
-<meta property="og:description" content="目前就职于瀚思科技从事UEBA后台研发">
+<meta property="og:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
+<meta property="og:image" content="http://yoursite.com/images/outofmemoryerror-out-of-swap-space.png">
+<meta property="og:image" content="http://yoursite.com/images/out-of-memory-kill-process-or-sacrifice-child.png">
+<meta property="og:updated_time" content="2019-07-16T09:49:10.441Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="自律使人幸福">
-<meta name="twitter:description" content="目前就职于瀚思科技从事UEBA后台研发">
+<meta name="twitter:title" content="各种内存溢出类型浅析">
+<meta name="twitter:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且">
+<meta name="twitter:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
   
     <link rel="alternative" href="/atom.xml" title="自律使人幸福" type="application/atom+xml">
   
@@ -146,64 +151,236 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-oom-category" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/15/hexo-blog-manual/" class="archive-article-date">
-  	<time datetime="2019-07-15T01:10:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/15/hexo-blog-manual/">hexo使用指南</a>
+    <h1 class="article-title" itemprop="name">
+      各种内存溢出类型浅析
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/07/16/oom-category/" class="archive-article-date">
+  	<time datetime="2019-07-16T09:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，也无法进一步将堆扩容。此外，当本机内存不足以支持加载Java类时，可能会抛出此错误。在极少数情况下，OutOfMemoryError也会出现在GC时间很长并且释放很少的内存时。</p>
+<p>当一个OutOfMemoryError异常被抛出，堆栈跟踪也会被打印出来。</p>
+<p>OutOfMemoryError异常也可能会在本地调用不能满足时被 native library抛出（例如，如果交换空间不足）。</p>
+<a id="more"></a>
+
+<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><h3 id="java-lang-OutOfMemoryError-Java-heap-space"><a href="#java-lang-OutOfMemoryError-Java-heap-space" class="headerlink" title="java.lang.OutOfMemoryError: Java heap space"></a>java.lang.OutOfMemoryError: Java heap space</h3><p><strong>原因：</strong> 无法在Java堆中分配对象所需空间，可能是因为先前指定的堆大小（或者是未指定是使用的默认大小）对于应用程序来说是不够的。也可能是因为应用程序无意中持有了某些对象的引用，这阻止了这些对象被垃圾回收。这在Java语言等同于内存泄漏。</p>
+<p><mark>注意：应用程序调用的API也可能无意中持有对象引用。</mark></p>
+<p>应用程序过度使用 finalizer。finalizer 对象不能被 GC 立刻回收。因为 finalizer 由结束队列服务的守护线程调用，有时 finalizer 线程的处理能力无法跟上结束队列的增长。</p>
+<p><strong>应用的流量变大也可能导致这个问题。</strong></p>
+<p>解决：</p>
+<ul>
+<li>-Xmx 增加堆大小。</li>
+<li>获取 heap dump，通过 MAT 来分析堆的组成情况，修复代码中存在的内存泄露 bug。</li>
+</ul>
+<h3 id="java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded"><a href="#java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded" class="headerlink" title="java.lang.OutOfMemoryError: GC Overhead limit exceeded"></a>java.lang.OutOfMemoryError: GC Overhead limit exceeded</h3><p>原因：垃圾收集器一直在运行，Java程序运行非常缓慢。在垃圾收集过程中，Java进程花费超过大约98％的时间进行垃圾收集，并且 GC 的收益小于堆大小的2％。如果这种情况连续出现 5 次，OutOfMemoryError错误就会被抛出。通常会抛出此异常，因为实时数据量几乎不适合Java堆，新分配的可用空间很小。</p>
+<p>解决：</p>
+<ul>
+<li>增加堆大小</li>
+<li>也可以使用命令行标志关闭<code>-XX:-UseGCOverheadLimit</code>关闭此异常（当然这不是一个好的操作）</li>
+<li>获取 heap dump，通过 MAT 来分析堆的组成情况，修复代码中存在的内存泄露 bug</li>
+</ul>
+<h3 id="java-lang-OutOfMemoryError-Unable-to-create-new-native-thread"><a href="#java-lang-OutOfMemoryError-Unable-to-create-new-native-thread" class="headerlink" title="java.lang.OutOfMemoryError: Unable to create new native thread"></a>java.lang.OutOfMemoryError: Unable to create new native thread</h3><p><img src="/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png" alt></p>
+<p>原因：在创建 Java 线程的时候，JVM 需要发送一个请求给操作系统去创建一个 native thread。创建 native thread这个操作因为 ulimit 限制被阻止。</p>
+<p>解决：</p>
+<ul>
+<li><p>很大可能是因为程序编码的问题导致的，因为通常来说，一个应用不会有上千个线程。</p>
+</li>
+<li><p>调整用户限制。</p>
+  <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">200000</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>pid_max</span><br><span class="line">echo <span class="number">120000</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>threads-max</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用-Xss参数减少线程栈大小，可能会导致栈溢出的异常。</p>
+</li>
+</ul>
+<h3 id="java-lang-OutOfMemoryError-Requested-array-size-exceeds-VM-limit"><a href="#java-lang-OutOfMemoryError-Requested-array-size-exceeds-VM-limit" class="headerlink" title="java.lang.OutOfMemoryError: Requested array size exceeds VM limit"></a>java.lang.OutOfMemoryError: Requested array size exceeds VM limit</h3><p>原因：应用程序（或该应用程序使用的API）尝试分配大于堆大小的数组。例如，应用程序尝试分配512 MB大小的数组但最大堆大小为256 MB。</p>
+<p>解决：</p>
+<ul>
+<li>通常问题是配置问题（堆大小太小）</li>
+<li>应用程序逻辑错误尝试创建大型数组（例如，当使用计算的算法计算数组中的元素数时尺寸不正确）</li>
+</ul>
+<h3 id="java-lang-OutOfMemoryError-Metaspace"><a href="#java-lang-OutOfMemoryError-Metaspace" class="headerlink" title="java.lang.OutOfMemoryError: Metaspace"></a>java.lang.OutOfMemoryError: Metaspace</h3><p>原因： 从 Java 8 开始 Perm gen 改成了 Metaspace，在本机内存中分配 class 元数据（称为 metaspace）。如果 metaspace 耗尽，则抛出异常。可用参数MaxMetaSpaceSize，限制该区域大小。</p>
+<p>解决：</p>
+<ul>
+<li>如果MaxMetaSpaceSize已设置，则增大该值</li>
+<li>去掉MaxMetaSpaceSize参数</li>
+<li>MetaSpace与Java堆都是使用的本机内存，在满足 Java 堆使用的情况下，适当的减小Java堆的大小将为MetaSpace提供更多空间</li>
+<li>可能是 CGlib 一类的动态代理技术导致的，可通过 class loading数目进行判断</li>
+</ul>
+<h3 id="java-lang-OutOfMemoryError-request-size-bytes-for-reason-Out-of-swap-space"><a href="#java-lang-OutOfMemoryError-request-size-bytes-for-reason-Out-of-swap-space" class="headerlink" title="java.lang.OutOfMemoryError: request size bytes for reason. Out of swap space?"></a>java.lang.OutOfMemoryError: request size bytes for reason. Out of swap space?</h3><p><img src="/images/outofmemoryerror-out-of-swap-space.png" alt></p>
+<p>原因：物理内存和交换区内存都已经耗尽或即将耗尽。</p>
+<p>解决：</p>
+<ul>
+<li><p>为系统增加一个640MB大小的 swap文件</p>
+  <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a </span><br><span class="line">dd <span class="attribute">if</span>=/dev/zero <span class="attribute">of</span>=swapfile <span class="attribute">bs</span>=1024 <span class="attribute">count</span>=655360</span><br><span class="line">mkswap swapfile</span><br><span class="line">swapon swapfile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果本机上还有其他的应用消耗内存很厉害，你可能需要使用其他主机来避免这个产生问题</p>
+</li>
+</ul>
+<h3 id="java-lang-OutOfMemoryError-Kill-process-or-sacrifice-child"><a href="#java-lang-OutOfMemoryError-Kill-process-or-sacrifice-child" class="headerlink" title="java.lang.OutOfMemoryError: Kill process or sacrifice child"></a>java.lang.OutOfMemoryError: Kill process or sacrifice child</h3><p><img src="/images/out-of-memory-kill-process-or-sacrifice-child.png" alt><br>原因：所有的虚拟内存都被耗尽，这对操作系统来说是致命的，所以操作系统会将异常（也可能是正常的被误杀）的进程杀掉。</p>
+<p>解决：</p>
+<ul>
+<li>把应用挪到其他机器上去</li>
+<li>主机加内存</li>
+<li>增加交换区大小（会影响应用运行速度）</li>
+</ul>
+<p>更多关于 oom 的信息，请参考：</p>
+<p><a href="https://plumbr.io/outofmemoryerror/java-heap-space" target="_blank" rel="noopener">https://plumbr.io/outofmemoryerror/java-heap-space</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">blog</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能调优</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/16/oom-category/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/07/15/power-law-distribution/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">二八定律、幂律分布、长尾问题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+    <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80NTMyNy8yMTg0MA==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+  
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -226,9 +403,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
