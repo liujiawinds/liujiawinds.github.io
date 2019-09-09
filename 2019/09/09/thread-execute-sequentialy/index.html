@@ -6,24 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>各种内存溢出类型浅析 | 自律使人幸福</title>
+  <title>A、B、C线程按序执行 | 自律使人幸福</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
-<meta name="keywords" content="java,性能调优">
+  <meta name="description" content="今天同事发了一个面试题在群里面，如下： 1编写一个程序，开启 3 个线程，这三个线程的 ID 分别为 A、B、C，每个线程将自己的 ID 在屏幕上打印 10 遍，要求输出的结果必须按顺序显示。如：ABCABCABC…… 依次递归  最开始想的是用 Condition 来依次触发，后来发现不是很优雅，最终改成了下面的代码。 12345678910111213141516171819202122232">
+<meta name="keywords" content="java,并发编程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="各种内存溢出类型浅析">
-<meta property="og:url" content="http://yoursite.com/2019/07/16/oom-category/index.html">
+<meta property="og:title" content="A、B、C线程按序执行">
+<meta property="og:url" content="http://yoursite.com/2019/09/09/thread-execute-sequentialy/index.html">
 <meta property="og:site_name" content="自律使人幸福">
-<meta property="og:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
+<meta property="og:description" content="今天同事发了一个面试题在群里面，如下： 1编写一个程序，开启 3 个线程，这三个线程的 ID 分别为 A、B、C，每个线程将自己的 ID 在屏幕上打印 10 遍，要求输出的结果必须按顺序显示。如：ABCABCABC…… 依次递归  最开始想的是用 Condition 来依次触发，后来发现不是很优雅，最终改成了下面的代码。 12345678910111213141516171819202122232">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
-<meta property="og:image" content="http://yoursite.com/images/outofmemoryerror-out-of-swap-space.png">
-<meta property="og:image" content="http://yoursite.com/images/out-of-memory-kill-process-or-sacrifice-child.png">
-<meta property="og:updated_time" content="2019-07-16T10:02:22.027Z">
+<meta property="og:updated_time" content="2019-09-09T09:45:46.828Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="各种内存溢出类型浅析">
-<meta name="twitter:description" content="概述java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemor">
-<meta name="twitter:image" content="http://yoursite.com/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png">
+<meta name="twitter:title" content="A、B、C线程按序执行">
+<meta name="twitter:description" content="今天同事发了一个面试题在群里面，如下： 1编写一个程序，开启 3 个线程，这三个线程的 ID 分别为 A、B、C，每个线程将自己的 ID 在屏幕上打印 10 遍，要求输出的结果必须按顺序显示。如：ABCABCABC…… 依次递归  最开始想的是用 Condition 来依次触发，后来发现不是很优雅，最终改成了下面的代码。 12345678910111213141516171819202122232">
   
     <link rel="alternative" href="/atom.xml" title="自律使人幸福" type="application/atom+xml">
   
@@ -151,94 +147,33 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-oom-category" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-thread-execute-sequentialy" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      各种内存溢出类型浅析
+      A、B、C线程按序执行
     </h1>
   
 
         
-        <a href="/2019/07/16/oom-category/" class="archive-article-date">
-  	<time datetime="2019-07-16T09:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-16</time>
+        <a href="/2019/09/09/thread-execute-sequentialy/" class="archive-article-date">
+  	<time datetime="2019-09-09T09:40:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-09</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java.lang.OutOfMemoryError（此后简称OutOfMemoryError）是内存泄漏的一个常见迹象。通常，当Java堆没有足够的空间分配给新对象时，会抛出这个错误。在这种情况下，垃圾收集器无法提供空间用于容纳新对象，堆也无法进一步扩容（已经达到 -Xmx 值）。此外，当本机内存不足以支持加载Java类时，GC时间很长但只能回收很少的内存时，也可能会抛出OutOfMemoryError。</p>
-<a id="more"></a>
+        <p>今天同事发了一个面试题在群里面，如下：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">编写一个程序，开启 <span class="number">3</span> 个线程，这三个线程的 ID 分别为 A、B、C，每个线程将自己的 ID 在屏幕上打印 <span class="number">10</span> 遍，要求输出的结果必须按顺序显示。如：ABCABCABC…… 依次递归</span><br></pre></td></tr></table></figure>
 
-<p>当一个OutOfMemoryError异常被抛出，堆栈跟踪也会被打印出来。</p>
-<p>OutOfMemoryError异常也可能会在本地调用不能满足时被 native library抛出（例如，如果交换空间不足）。</p>
-<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><h3 id="java-lang-OutOfMemoryError-Java-heap-space"><a href="#java-lang-OutOfMemoryError-Java-heap-space" class="headerlink" title="java.lang.OutOfMemoryError: Java heap space"></a>java.lang.OutOfMemoryError: Java heap space</h3><p><strong>原因：</strong> 无法在Java堆中分配对象所需空间，可能是因为先前指定的堆大小（或者是未指定是使用的默认大小）对于应用程序来说是不够的。也可能是因为应用程序无意中持有了某些对象的引用，这阻止了这些对象被垃圾回收。这在Java语言等同于内存泄漏。</p>
-<p><mark>注意：应用程序调用的API也可能无意中持有对象引用。</mark></p>
-<p>应用程序过度使用 finalizer。finalizer 对象不能被 GC 立刻回收。因为 finalizer 由结束队列服务的守护线程调用，有时 finalizer 线程的处理能力无法跟上结束队列的增长。</p>
-<p><strong>应用的流量变大也可能导致这个问题。</strong></p>
-<p>解决：</p>
-<ul>
-<li>-Xmx 增加堆大小。</li>
-<li>获取 heap dump，通过 MAT 来分析堆的组成情况，修复代码中存在的内存泄露 bug。</li>
-</ul>
-<h3 id="java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded"><a href="#java-lang-OutOfMemoryError-GC-Overhead-limit-exceeded" class="headerlink" title="java.lang.OutOfMemoryError: GC Overhead limit exceeded"></a>java.lang.OutOfMemoryError: GC Overhead limit exceeded</h3><p>原因：垃圾收集器一直在运行，Java程序运行非常缓慢。在垃圾收集过程中，Java进程花费超过大约98％的时间进行垃圾收集，并且 GC 的收益小于堆大小的2％。如果这种情况连续出现 5 次，OutOfMemoryError错误就会被抛出。</p>
-<p>假如不抛出 GC overhead limit 错误会发生什么情况呢? 那就是GC清理的这么点内存很快会再次填满, 迫使GC再次执行. 这样就形成恶性循环, CPU使用率一直是100%, 而GC却没有任何成果. 系统用户就会看到系统卡死 - 以前只需要几毫秒的操作, 现在需要好几分钟才能完成。</p>
-<p>这也是一个很好的 <strong>快速失败原则</strong> 的案例。</p>
-<p>解决：</p>
-<ul>
-<li>增加堆大小</li>
-<li>也可以使用命令行标志关闭<code>-XX:-UseGCOverheadLimit</code>关闭此异常（当然这不是一个好的操作）</li>
-<li>获取 heap dump，通过 MAT 来分析堆的组成情况，修复代码中存在的内存泄露 bug</li>
-</ul>
-<h3 id="java-lang-OutOfMemoryError-Unable-to-create-new-native-thread"><a href="#java-lang-OutOfMemoryError-Unable-to-create-new-native-thread" class="headerlink" title="java.lang.OutOfMemoryError: Unable to create new native thread"></a>java.lang.OutOfMemoryError: Unable to create new native thread</h3><p><img src="/images/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png" alt></p>
-<p>原因：在创建 Java 线程的时候，JVM 需要发送一个请求给操作系统去创建一个 native thread。创建 native thread这个操作因为 ulimit 限制被阻止。</p>
-<p>解决：</p>
-<ul>
-<li><p>很大可能是因为程序编码的问题导致的，因为通常来说，一个应用不会有上千个线程。</p>
-</li>
-<li><p>调整用户限制。</p>
-  <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">200000</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>pid_max</span><br><span class="line">echo <span class="number">120000</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>threads-max</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用-Xss参数减少线程栈大小，可能会导致栈溢出的异常。</p>
-</li>
-</ul>
-<h3 id="java-lang-OutOfMemoryError-Requested-array-size-exceeds-VM-limit"><a href="#java-lang-OutOfMemoryError-Requested-array-size-exceeds-VM-limit" class="headerlink" title="java.lang.OutOfMemoryError: Requested array size exceeds VM limit"></a>java.lang.OutOfMemoryError: Requested array size exceeds VM limit</h3><p>原因：应用程序（或该应用程序使用的API）尝试分配大于堆大小的数组。例如，应用程序尝试分配512 MB大小的数组但最大堆大小为256 MB。</p>
-<p>解决：</p>
-<ul>
-<li>通常问题是配置问题（堆大小太小）</li>
-<li>应用程序逻辑错误尝试创建大型数组（例如，当使用计算的算法计算数组中的元素数时尺寸不正确）</li>
-</ul>
-<h3 id="java-lang-OutOfMemoryError-Metaspace"><a href="#java-lang-OutOfMemoryError-Metaspace" class="headerlink" title="java.lang.OutOfMemoryError: Metaspace"></a>java.lang.OutOfMemoryError: Metaspace</h3><p>原因： 从 Java 8 开始 Perm gen 改成了 Metaspace，在本机内存中分配 class 元数据（称为 metaspace）。如果 metaspace 耗尽，则抛出异常。可用参数MaxMetaSpaceSize，限制该区域大小。</p>
-<p>解决：</p>
-<ul>
-<li>如果MaxMetaSpaceSize已设置，则增大该值</li>
-<li>去掉MaxMetaSpaceSize参数</li>
-<li>MetaSpace与Java堆都是使用的本机内存，在满足 Java 堆使用的情况下，适当的减小Java堆的大小将为MetaSpace提供更多空间</li>
-<li>可能是 CGlib 一类的动态代理技术导致的，可通过 class loading数目进行判断</li>
-</ul>
-<h3 id="java-lang-OutOfMemoryError-request-size-bytes-for-reason-Out-of-swap-space"><a href="#java-lang-OutOfMemoryError-request-size-bytes-for-reason-Out-of-swap-space" class="headerlink" title="java.lang.OutOfMemoryError: request size bytes for reason. Out of swap space?"></a>java.lang.OutOfMemoryError: request size bytes for reason. Out of swap space?</h3><p><img src="/images/outofmemoryerror-out-of-swap-space.png" alt></p>
-<p>原因：物理内存和交换区内存都已经耗尽或即将耗尽。</p>
-<p>解决：</p>
-<ul>
-<li><p>为系统增加一个640MB大小的 swap文件</p>
-  <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a </span><br><span class="line">dd <span class="attribute">if</span>=/dev/zero <span class="attribute">of</span>=swapfile <span class="attribute">bs</span>=1024 <span class="attribute">count</span>=655360</span><br><span class="line">mkswap swapfile</span><br><span class="line">swapon swapfile</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果本机上还有其他的应用消耗内存很厉害，你可能需要使用其他主机来避免这个产生问题</p>
-</li>
-</ul>
-<h3 id="java-lang-OutOfMemoryError-Kill-process-or-sacrifice-child"><a href="#java-lang-OutOfMemoryError-Kill-process-or-sacrifice-child" class="headerlink" title="java.lang.OutOfMemoryError: Kill process or sacrifice child"></a>java.lang.OutOfMemoryError: Kill process or sacrifice child</h3><p><img src="/images/out-of-memory-kill-process-or-sacrifice-child.png" alt><br>原因：所有的虚拟内存都被耗尽，这对操作系统来说是致命的，所以操作系统会将异常（也可能是正常的被误杀）的进程杀掉。</p>
-<p>解决：</p>
-<ul>
-<li>把应用挪到其他机器上去</li>
-<li>主机加内存</li>
-<li>增加交换区大小（会影响应用运行速度）</li>
-</ul>
-<p>更多关于 oom 的信息，请参考：</p>
-<p><a href="https://plumbr.io/outofmemoryerror/java-heap-space" target="_blank" rel="noopener">https://plumbr.io/outofmemoryerror/java-heap-space</a></p>
+<p>最开始想的是用 Condition 来依次触发，后来发现不是很优雅，最终改成了下面的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">printThreadName</span><span class="params">(<span class="keyword">int</span> threadIndex, AtomicInteger offset, <span class="keyword">int</span> totalThread, <span class="keyword">int</span> printTimes)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (offset.get() / totalThread &lt;= (printTimes - <span class="number">1</span>)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (threadIndex == (offset.get() % totalThread)) &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName());</span><br><span class="line">                offset.incrementAndGet();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@org</span>.junit.Test</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test_thread_order</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        AtomicInteger offset = <span class="keyword">new</span> AtomicInteger();</span><br><span class="line">        <span class="keyword">int</span> printTimes = <span class="number">10</span>;</span><br><span class="line">        List&lt;String&gt; names = Arrays.asList(<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>);</span><br><span class="line">        Thread[] threads = <span class="keyword">new</span> Thread[names.size()];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; names.size(); i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> threadIndex = i;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    printThreadName(threadIndex, offset, names.size(), printTimes);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;, names.get(i));</span><br><span class="line">            thread.start();</span><br><span class="line"></span><br><span class="line">            threads[i] = thread;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// wait to complete.</span></span><br><span class="line">        threads[names.size()-<span class="number">1</span>].join();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>整体来说是比较满意的，无锁，而且还可以任意的增加线程，执行顺序在声明<code>names</code>的时候就已经确定。</p>
 
       
 
@@ -256,7 +191,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能调优</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">并发编程</a>
         		</li>
       		
 		</ul>
@@ -312,7 +247,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="https://img.fanhaobai.com/qrcode.php?url=https://liujiawinds.github.io/2019/07/16/oom-category/" alt="微信分享二维码">
+      <img src="https://img.fanhaobai.com/qrcode.php?url=https://liujiawinds.github.io/2019/09/09/thread-execute-sequentialy/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -327,18 +262,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/09/09/thread-execute-sequentialy/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          A、B、C线程按序执行
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/07/15/power-law-distribution/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">二八定律、幂律分布、长尾问题</div>
+    <a href="/2019/07/16/oom-category/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">各种内存溢出类型浅析</div>
       <i class="icon-circle-right"></i>
     </a>
   
