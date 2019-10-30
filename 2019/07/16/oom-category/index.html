@@ -201,7 +201,7 @@
 <li><p>很大可能是因为程序编码的问题导致的，因为通常来说，一个应用不会有上千个线程。</p>
 </li>
 <li><p>调整用户限制。</p>
-  <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">200000</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>pid_max</span><br><span class="line">echo <span class="number">120000</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>threads-max</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 200000 &gt; /proc/sys/kernel/pid_max</span><br><span class="line">echo 120000 &gt; /proc/sys/kernel/threads-max</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>使用-Xss参数减少线程栈大小，可能会导致栈溢出的异常。</p>
 </li>
@@ -225,7 +225,7 @@
 <p>解决：</p>
 <ul>
 <li><p>为系统增加一个640MB大小的 swap文件</p>
-  <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a </span><br><span class="line">dd <span class="attribute">if</span>=/dev/zero <span class="attribute">of</span>=swapfile <span class="attribute">bs</span>=1024 <span class="attribute">count</span>=655360</span><br><span class="line">mkswap swapfile</span><br><span class="line">swapon swapfile</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a </span><br><span class="line">dd if=/dev/zero of=swapfile bs=1024 count=655360</span><br><span class="line">mkswap swapfile</span><br><span class="line">swapon swapfile</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>如果本机上还有其他的应用消耗内存很厉害，你可能需要使用其他主机来避免这个产生问题</p>
 </li>
@@ -477,6 +477,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">jenkins</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">CI</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DevOps</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">blog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
@@ -486,14 +506,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">blog</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -232,7 +232,7 @@
 <p> <img src="/images/D83C9BAD-1A12-49DB-864B-D2FCEC43CA5F.png" alt><br> <img src="/images/C6992914-64BB-4B22-9963-310BAF561DC4.png" alt>    </p>
 </li>
 <li><p>在生成 stream graph 的时候，每个 transformation 都会决定其slotShareGroup 的名称。</p>
- <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">逻辑分为以下几种情况：</span><br><span class="line">   a、如果指定了分组名，则直接返回指定的值； </span><br><span class="line">   b、如果没有指定分组名，则遍历输入的各个节点的分组名；</span><br><span class="line">       <span class="selector-tag">b</span>.<span class="number">1</span>、如果所有输入的分组名都是一样的，则将这个一样的分组名作为当前节点的分组名； </span><br><span class="line">       <span class="selector-tag">b</span>.<span class="number">2</span>、如果所有输入的分组名有不一样的，则返回默认分组名”default”；</span><br></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">逻辑分为以下几种情况：</span><br><span class="line">   a、如果指定了分组名，则直接返回指定的值； </span><br><span class="line">   b、如果没有指定分组名，则遍历输入的各个节点的分组名；</span><br><span class="line">       b.1、如果所有输入的分组名都是一样的，则将这个一样的分组名作为当前节点的分组名； </span><br><span class="line">       b.2、如果所有输入的分组名有不一样的，则返回默认分组名”default”；</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>遍历完成时也就将所有的 StreamTransformations 变成了 stream node 和 stream edge，生成一个完整的StreamGraph。最后 flink dashboard 上面的DAG图也就是这样出来的。</p>
 </li>
@@ -260,7 +260,7 @@
 <p>因为上游输入可能有多个，所以这里有两种策略：一是 ALL，根据所有已分配 slot 的输入源所在TM 位置进行判断。还有一个是 ANY，根据任意已分配 slot 的输入源所在 TM 进行判断。 </p>
 <p>默认使用的是LocationPreferenceConstraint.ALL（如上贴出的代码所示）。</p>
 <p>多输入源的Location 选择逻辑（@ExecutionVertex.getPreferredLocationsBasedOnInputs）如下：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">a</span>、如果没有输入源，则返回空集合，对于数据源节点来说，就是返回空集合； </span><br><span class="line"><span class="selector-tag">b</span>、如果有输入源，则对每个输入源，都找出其所有分区所在的<span class="selector-tag">TaskManager</span>的位置，如果某个输入源的分区所在位置超过<span class="selector-tag">MAX_DISTINCT_LOCATIONS_TO_CONSIDER</span>(默认值为<span class="number">8</span>)，则不考虑这个输入源，直接跳过，然后将满足条件的输入源中，分区位置分布做少的那个数据源对应的<span class="selector-tag">TaskManager</span>的位置集合，作为计算结果返回。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a、如果没有输入源，则返回空集合，对于数据源节点来说，就是返回空集合； </span><br><span class="line">b、如果有输入源，则对每个输入源，都找出其所有分区所在的TaskManager的位置，如果某个输入源的分区所在位置超过MAX_DISTINCT_LOCATIONS_TO_CONSIDER(默认值为8)，则不考虑这个输入源，直接跳过，然后将满足条件的输入源中，分区位置分布做少的那个数据源对应的TaskManager的位置集合，作为计算结果返回。</span><br></pre></td></tr></table></figure>
 
 <p>下面是 slot 申请的流程示意图：</p>
 <p><img src="/images/413838-20190331221811994-1701333231.png" alt></p>
@@ -534,6 +534,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">jenkins</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">CI</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DevOps</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">blog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
@@ -543,14 +563,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">blog</a>
               </li>
              
               <li class="article-tag-list-item">
