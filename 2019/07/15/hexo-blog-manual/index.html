@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="自律使人幸福">
 <meta property="og:description" content="写新文章hexo new &amp;quot;blog-name&amp;quot;这个指令可以帮我们生成 md 文件并添加文章的头部信息。自己在 source/_posts/ 下创建md文件也可以。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-15T06:32:54.013Z">
+<meta property="og:updated_time" content="2022-03-23T03:35:35.433Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo使用指南">
 <meta name="twitter:description" content="写新文章hexo new &amp;quot;blog-name&amp;quot;这个指令可以帮我们生成 md 文件并添加文章的头部信息。自己在 source/_posts/ 下创建md文件也可以。">
@@ -175,6 +175,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:liujiawinds/liujiawinds.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
 
 <p>配置好后，通过<code>hexo d</code>，即可上传生成的静态文件。</p>
+<p>如果上传后发现 github.io 页面是空白的，需要检查是否是 public/index.html 是空白的。<br>如果是很大可能是因为 node 版本问题导致的，nvm 切换到12.16.2后再次<code>hexo g</code>，<code>hexo d</code>即可。</p>
 <p>参考：<br><a href="https://www.cnblogs.com/liuxianan/p/build-blog-website-by-hexo-github.html" target="_blank" rel="noopener">https://www.cnblogs.com/liuxianan/p/build-blog-website-by-hexo-github.html</a></p>
 
       
@@ -421,6 +422,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">blog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">flink</a>
               </li>
              
@@ -430,14 +439,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">流处理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -453,15 +454,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">阅读</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">经济</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
             
             <div class="clearfix"></div>
